@@ -20,15 +20,17 @@ jobs:
 
       - name: setup gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
 
-      - name: make gradlew executable
-        run: chmod +x ./gradlew
+      # - name: make gradlew executable
+      #   run: chmod +x ./gradlew
 
       - name: generate grammar
-        run: ./gradlew generateGrammarClean
+        run: gradle generateGrammarClean
 
       - name: build
-        run: ./gradlew buildPlugin
+        run: gradlew buildPlugin
             
       - uses: actions/upload-artifact@v4
         with:
