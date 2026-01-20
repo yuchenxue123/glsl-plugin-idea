@@ -21,10 +21,17 @@ import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
+import com.intellij.psi.PsiInvalidElementAccessException
+import com.intellij.openapi.progress.ProcessCanceledException
+
 class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) :
     GlslReference(element, textRange) {
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
+        val project = reference.element.project
+        if (project.isDisposed) return@AbstractResolver null
+        if (!reference.element.isValid) return@AbstractResolver null
+
         reference.doResolve()
         reference.resolvedReferences.firstOrNull() as? GlslNamedVariable
     }
@@ -33,15 +40,28 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     override fun resolve(): GlslNamedVariable? {
-        if (!shouldResolve()) return null
-        val resolveCache = ResolveCache.getInstance(project)
-        return resolveCache.resolveWithCaching(this, resolver, true, false)
+        return try {
+            val project = element.project
+            if (project.isDisposed) return null
+            if (!element.isValid) return null
+
+            if (!shouldResolve()) return null
+            val resolveCache = ResolveCache.getInstance(project)
+            return resolveCache.resolveWithCaching(this, resolver, true, false)
+        } catch (e: Throwable) {
+            if (e is ProcessCanceledException) throw e
+            null
+        }
     }
 
     /**
      *
      */
     override fun getVariants(): Array<LookupElement> {
+        val project = element.project
+        if (project.isDisposed) return emptyArray()
+        if (!element.isValid) return emptyArray()
+
         doResolve(CONTAINS)
         return resolvedReferences.mapNotNull { it.getLookupElement() }.toTypedArray()
     }
@@ -50,6 +70,10 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     override fun resolveMany(): List<GlslNamedElement> {
+        val project = element.project
+        if (project.isDisposed) return emptyList()
+        if (!element.isValid) return emptyList()
+
         if (!shouldResolve()) return emptyList()
         val resolveCache = ResolveCache.getInstance(project)
         resolveCache.resolveWithCaching(this, resolver, true, false)
@@ -60,6 +84,10 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     override fun doResolve(filterType: FilterType) {
+        val project = element.project
+        if (project.isDisposed) return
+        if (!element.isValid) return
+
         try {
             resolvedReferences.clear()
             currentFilterType = filterType
@@ -73,6 +101,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                 externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
             }
             lookupInGlobalScope(externalDeclaration)
+        } catch (_: PsiInvalidElementAccessException) {
+            includeFiles.clear()
         } catch (_: StopLookupException) {
             includeFiles.clear()
         }

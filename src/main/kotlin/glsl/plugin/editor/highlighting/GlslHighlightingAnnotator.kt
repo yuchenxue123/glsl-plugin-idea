@@ -23,6 +23,10 @@ class GlslHighlightingAnnotator : Annotator {
      *
      */
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        val project = element.project
+        if (project.isDisposed) return
+        if (!element.isValid) return
+
         if (element !is GlslIdentifier || element is GlslBuiltinType) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
         val elementName = element.getName()

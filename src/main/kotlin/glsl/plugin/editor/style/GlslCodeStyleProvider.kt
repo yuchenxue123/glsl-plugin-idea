@@ -8,11 +8,17 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import glsl.plugin.language.GlslLanguage
+import com.intellij.lang.Language
 
 /**
  *
  */
 class GlslCodeStyleProvider : CodeStyleSettingsProvider() {
+
+    override fun getLanguage(): Language? {
+        return GlslLanguage.INSTANCE
+    }
+
 
     /**
     *
