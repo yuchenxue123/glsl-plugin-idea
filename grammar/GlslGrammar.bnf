@@ -532,6 +532,7 @@
         BOOLCONSTANT="regexp:false|true"
         STRING_LITERAL="regexp:(\"([^\"\\]|\[.])*\")"
         IDENTIFIER="regexp:[a-zA-Z_]+\w*"
+//        MOJ_PATH='regexp:[a-zA-Z_]\w*([\s:/]*[a-zA-Z_]\w*)*(\.[a-zA-Z_]\w*)?'
     ]
 }
 
@@ -1464,7 +1465,7 @@ pp_include_declaration
     {   pin(".*")=1 generateTokenAccessors=true }
 
 private pp_moj_import_declaration
-    ::= PP_MOJ_IMPORT (STRING_LITERAL | (LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE))
+    ::= PP_MOJ_IMPORT (STRING_LITERAL | (LEFT_ANGLE MOJ_PATH RIGHT_ANGLE))
     {   pin(".*")=1 generateTokenAccessors=true }
 
 private pp_version_declaration
