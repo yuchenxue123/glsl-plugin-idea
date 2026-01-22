@@ -77,8 +77,7 @@
         PP_PRAGMA="#pragma"
         PP_EXTENSION="#extension"
         PP_INCLUDE="#include"
-        PP_MOJ_IMPORT="#moj_import"
-        MOJ_INCLUDE_PATH="regexp:[a-zA-Z0-9_\-\.\/:]+"
+        PP_MOJ_IMPORT = "#moj_import"
         PP_LINE="#line"
         MACRO_LINE="__LINE__"
         MACRO_FILE="__FILE__"
@@ -915,15 +914,15 @@ block_structure
 
 struct_specifier
     ::= STRUCT type_name? LEFT_BRACE struct_declaration_list RIGHT_BRACE
-    {   pin=1  }
+    {   pin=1   }
 
 private struct_declaration_list
-    ::= struct_declaration*
+    ::= struct_declaration+
 
 struct_declaration
     ::= fully_specified_type struct_declarator_list SEMICOLON
     |   pp_statement
-    {   pin=1 }
+    {   pin=1   }
 
 private recover_struct_declaration_list ::= !(SEMICOLON|COMMA|RIGHT_BRACE)
 
@@ -1464,12 +1463,9 @@ pp_include_declaration
     ::= PP_INCLUDE (STRING_LITERAL | (LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE))
     {   pin(".*")=1 generateTokenAccessors=true }
 
-pp_moj_import_declaration
-    ::= PP_MOJ_IMPORT (STRING_LITERAL | (LEFT_ANGLE moj_path_wrapper RIGHT_ANGLE))
+private pp_moj_import_declaration
+    ::= PP_MOJ_IMPORT (STRING_LITERAL | (LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE))
     {   pin(".*")=1 generateTokenAccessors=true }
-
-private moj_path_wrapper
-    ::= INCLUDE_PATH | MOJ_INCLUDE_PATH
 
 private pp_version_declaration
     ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?

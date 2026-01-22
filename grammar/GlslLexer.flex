@@ -72,13 +72,12 @@ PP_ERROR="#error"
 PP_PRAGMA="#pragma"
 PP_EXTENSION="#extension"
 PP_INCLUDE="#include"
-PP_MOJ_IMPORT="#moj_import" 
+PP_MOJ_IMPORT = "#moj_import"
 PP_LINE="#line"
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
 INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
-MOJ_REGEX=[a-zA-Z0-9_\-\.\/:]+
 
 
 %%
@@ -97,7 +96,6 @@ MOJ_REGEX=[a-zA-Z0-9_\-\.\/:]+
   ">"                              { return RIGHT_ANGLE; }
   {STRING_LITERAL}                 { return STRING_LITERAL; }
   {INCLUDE_PATH}                   { return INCLUDE_PATH; }
-  {MOJ_REGEX}                      { return MOJ_INCLUDE_PATH; }
 }
 
 <MACRO_IDENTIFIER_STATE> {
@@ -145,7 +143,7 @@ MOJ_REGEX=[a-zA-Z0-9_\-\.\/:]+
   {PP_ERROR}                       { yybegin(MACRO_IGNORE_STATE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(MACRO_IGNORE_STATE); return PP_PRAGMA;}
   {PP_INCLUDE}                     { yybegin(MACRO_INCLUDE_STATE); return PP_INCLUDE;}
-  {PP_MOJ_IMPORT}                  { yybegin(MACRO_INCLUDE_STATE); return PP_MOJ_IMPORT;} 
+  {PP_MOJ_IMPORT}                  { yybegin(MACRO_INCLUDE_STATE); return PP_MOJ_IMPORT;}
   {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
 
   ";"                              { afterType = false; return SEMICOLON; }
