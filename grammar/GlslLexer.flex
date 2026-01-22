@@ -144,7 +144,7 @@ MOJ_PATH={IDENTIFIER}([\s:\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   {PP_ERROR}                       { yybegin(MACRO_IGNORE_STATE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(MACRO_IGNORE_STATE); return PP_PRAGMA;}
   {PP_INCLUDE}                     { yybegin(MACRO_INCLUDE_STATE); return PP_INCLUDE;}
-  {PP_MOJ_IMPORT}                  { yybegin(MACRO_INCLUDE_STATE); return PP_MOJ_IMPORT;}
+  {PP_MOJ_IMPORT}                  { yybegin(MACRO_IGNORE_STATE); return PP_MOJ_IMPORT;}
   {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
 
   ";"                              { afterType = false; return SEMICOLON; }
