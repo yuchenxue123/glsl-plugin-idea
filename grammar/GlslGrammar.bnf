@@ -911,13 +911,14 @@ block_structure_wrapper ::=
 
 block_structure
     ::= type_qualifier type_name LEFT_BRACE struct_declaration_list RIGHT_BRACE
+    {   pin=3   }
 
 struct_specifier
     ::= STRUCT type_name? LEFT_BRACE struct_declaration_list RIGHT_BRACE
     {   pin=1  }
 
 private struct_declaration_list
-    ::= struct_declaration+
+    ::= struct_declaration*
 
 struct_declaration
     ::= fully_specified_type struct_declarator_list SEMICOLON
